@@ -14,8 +14,10 @@
     %label.col-md-2.control-label{"for" => "ems_type"}
       = _('Type')
     .col-md-8
-      %select{"ng-options"=>"type[0] for type in newProv.types track by type[1]",
-              "ng-model" => "newProv.newProvider.type",
+      %select{"ng-options"=>"type[1] as type[0] for type in newProv.types track by type[1]",
+              "ng-model"  => "newProv.newProvider.type",
+              "ng-value"  => "newProv.newProvider.type",
+              "ng-change" => "newProv.onChangedProvider()",
               "selectpicker-for-select-tag" => ""}
 
       -# %pf-select{"ng-model"                    => "newProv.newProvider.type",

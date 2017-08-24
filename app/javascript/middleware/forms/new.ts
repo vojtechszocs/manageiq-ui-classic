@@ -1,8 +1,6 @@
 import * as ng from 'angular';
-import { getStore, addReducer, applyReducerHash } from '../../miq-redux/lib';
-import { AppState, Action } from '../../miq-redux/redux-types';
-import { MiqStore } from '../../miq-redux/redux-types';
 import { INIT_NEW_PROVIDER, reducers, UPDATE_NEW_PROVIDER } from './new-provider-reducer';
+import { DefaultFormController } from '../../forms-common/defaultFormController';
 
 export default class NewProviderForm implements ng.IComponentOptions {
   public templateUrl: string = '/static/middleware/new-provider.html.haml';
@@ -16,33 +14,23 @@ export default class NewProviderForm implements ng.IComponentOptions {
   };
 }
 
-class NewProviderController {
+class NewProviderController extends DefaultFormController {
   public types: any[];
-  public componentState: Object;
   public newProvider: any;
   private formFieldsUrl: string;
   private novalidate: boolean;
   private createUrl: string;
-  private reduxStore: MiqStore;
-  private unbind: any = {};
-  public $name: string = 'newProvider';
   private selects: NodeListOf<HTMLSelectElement>;
 
-  public static $inject = ['$element'];
+  public static $inject = ['$element', '$scope'];
 
-  constructor(private $element: Element) {
-    this.unbind.reducer = addReducer(NewProviderController.applyReducers);
-    this.reduxStore = getStore();
-    this.unbind.redux = this.reduxStore.subscribe(() => this.updateStore());
-  }
-
-  private static applyReducers(state: AppState, action: Action) {
-    return applyReducerHash(reducers, state, action);
+  constructor(private $element: Element, private $scope: ng.IScope) {
+    super(reducers);
   }
 
   public updateStore() {
     const currState: any = this.reduxStore.getState();
-    this.newProvider = {...currState.providers.middleware.hawkular.newProvider};
+    this.newProvider = { ...currState.providers.middleware.hawkular.newProvider };
   }
 
   public $onInit() {
@@ -52,17 +40,6 @@ class NewProviderController {
   }
 
   public onChangedProvider() {
-    console.log(this.newProvider);
-    this.reduxStore.dispatch({
-      type: UPDATE_NEW_PROVIDER, payload: {
-        name: this.newProvider.name,
-        type: this.newProvider.type
-      }
-    });
-  }
-
-  public $onDestroy() {
-    this.unbind.redux();
-    this.unbind.reducer();
+    this.reduxStore.dispatch({ type: UPDATE_NEW_PROVIDER, payload: this.newProvider });
   }
 }

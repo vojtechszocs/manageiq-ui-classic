@@ -1,4 +1,4 @@
-import { AppState } from '../../miq-redux/redux-types';
+import { AppState, IMiqReducerHash } from '../../miq-redux/redux-types';
 import { merge, defaultsDeep } from 'lodash';
 
 export const INIT_NEW_PROVIDER: string = 'INIT_NEW_PROVIDER_HAWKULAR'
@@ -29,10 +29,11 @@ function updateNewProvider(state, action): AppState {
       }
     }
   };
+  console.log({ ...merge(state, newProvider) });
   return { ...merge(state, newProvider) }
 }
 
-export const reducers = {
+export const reducers: IMiqReducerHash = {
   [INIT_NEW_PROVIDER]: initNewProvider,
   [UPDATE_NEW_PROVIDER]: updateNewProvider
 };
