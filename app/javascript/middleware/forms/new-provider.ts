@@ -1,5 +1,6 @@
 import * as ng from 'angular';
-import { INIT_NEW_PROVIDER, reducers, UPDATE_NEW_PROVIDER } from './new-provider-reducer';
+import { initNewProvider, updateNewProvider } from './new-provider-action';
+import { reducers } from './new-provider-reducer';
 import { DefaultFormController } from '../../forms-common/defaultFormController';
 
 export default class NewProviderForm implements ng.IComponentOptions {
@@ -9,17 +10,17 @@ export default class NewProviderForm implements ng.IComponentOptions {
   public bindings: any = {
     types: '<',
     formFieldsUrl: '@',
-    novalidate: '@',
-    createUrl: '@'
+    createUrl: '@',
+    novalidate: '@'
   };
 }
 
 class NewProviderController extends DefaultFormController {
-  public types: any[];
-  public newProvider: any;
+  private componentState: Object;
+  private types: Array<any>;
   private formFieldsUrl: string;
-  private novalidate: boolean;
   private createUrl: string;
+  private novalidate: boolean;
   private selects: NodeListOf<HTMLSelectElement>;
 
   public static $inject = ['$element', '$scope'];
@@ -28,18 +29,18 @@ class NewProviderController extends DefaultFormController {
     super(reducers);
   }
 
-  public updateStore() {
-    const currState: any = this.reduxStore.getState();
-    this.newProvider = { ...currState.providers.middleware.hawkular.newProvider };
+  public updateFromStore() {
+    const currState: any = this.store.getState();
+    this.componentState = { ...currState.providers.middleware.hawkular.newProvider };
   }
 
   public $onInit() {
     this.selects = this.$element.querySelectorAll('select');
-    this.reduxStore.dispatch({ type: INIT_NEW_PROVIDER });
+    this.store.dispatch(initNewProvider());
     setTimeout(() => (<any>angular.element(this.selects)).selectpicker('refresh'));
   }
 
-  public onChangedProvider() {
-    this.reduxStore.dispatch({ type: UPDATE_NEW_PROVIDER, payload: this.newProvider });
+  public onDataChange() {
+    this.store.dispatch(updateNewProvider(this.componentState));
   }
 }

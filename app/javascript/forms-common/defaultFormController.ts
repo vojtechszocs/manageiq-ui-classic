@@ -1,33 +1,32 @@
 import { getStore, addReducer, applyReducerHash } from '../miq-redux/redux-client';
-import { MiqStore, IMiqReducerHash, AppState, IMiqAction } from '../miq-redux/redux-types';
+import { AppState, MiqStore, IMiqReducerHash, IMiqAction } from '../miq-redux/redux-types';
 
-export interface IUnbindReduxReducers {
-  redux?: () => void;
+interface IUnbindRedux {
+  store?: () => void;
   reducer?: () => void;
 }
 
 export abstract class DefaultFormController {
-  protected unbind: IUnbindReduxReducers = {};
-  protected reduxStore: MiqStore;
+  protected store: MiqStore;
+  private unbind: IUnbindRedux = {};
 
-  constructor(reducersHash?: IMiqReducerHash) {
-    if (reducersHash) {
+  constructor(reducers?: IMiqReducerHash) {
+    this.store = getStore();
+    this.unbind.store = this.store.subscribe(() => this.updateFromStore());
+
+    if (reducers) {
       this.unbind.reducer = addReducer(
-        (state: AppState, action: IMiqAction) => applyReducerHash(reducersHash, state, action)
+        (state: AppState, action: IMiqAction) => applyReducerHash(reducers, state, action)
       );
     }
-    this.reduxStore = getStore();
-    this.unbind.redux = this.reduxStore.subscribe(() => this.updateStore());
   }
 
-  protected updateStore() {
-    throw new Error('Controller should implement updateStore method');
+  public updateFromStore() {
+    throw new Error('Controller should implement updateFromStore method');
   }
 
   public $onDestroy() {
-    this.unbind.redux();
-    if (this.unbind.reducer) {
-      this.unbind.reducer();
-    }
+    this.unbind.store();
+    this.unbind.reducer && this.unbind.reducer();
   }
 }

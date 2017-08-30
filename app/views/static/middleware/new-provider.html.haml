@@ -6,21 +6,21 @@
       %input.form-control{"type"        => "text",
                           "id"          => "ems_name",
                           "name"        => "name",
-                          "ng-model"    => "newProv.newProvider.name",
-                          "ng-change"   => "newProv.onChangedProvider()",
-                          "ng-value"    => "newProv.newProvider.name",
+                          "ng-model"    => "newProv.componentState.name",
+                          "ng-value"    => "newProv.componentState.name",
+                          "ng-change"   => "newProv.onDataChange()",
                           "auto-focus"  => ""}
   .form-group
     %label.col-md-2.control-label{"for" => "ems_type"}
       = _('Type')
     .col-md-8
       %select{"ng-options"=>"type[1] as type[0] for type in newProv.types track by type[1]",
-              "ng-model"  => "newProv.newProvider.type",
-              "ng-value"  => "newProv.newProvider.type",
-              "ng-change" => "newProv.onChangedProvider()",
+              "ng-model"  => "newProv.componentState.type",
+              "ng-value"  => "newProv.componentState.type",
+              "ng-change" => "newProv.onDataChange()",
               "selectpicker-for-select-tag" => ""}
 
-      -# %pf-select{"ng-model"                    => "newProv.newProvider.type",
-      -#            "ng-change"                   => "newProv.onChangedProvider()",
+      -# %pf-select{"ng-model"                    => "newProv.componentState.type",
+      -#            "ng-change"                   => "newProv.onDataChange()",
       -#            "id"                          => "ems_type",
       -#            "options"=>"newProv.types"}
