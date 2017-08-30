@@ -1,1 +1,1 @@
-require('../miq-redux')
+require('../miq-redux');

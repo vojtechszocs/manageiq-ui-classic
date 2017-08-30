@@ -3,6 +3,7 @@ import { merge, defaultsDeep } from 'lodash';
 
 export const INIT_NEW_PROVIDER: string = 'INIT_NEW_PROVIDER_HAWKULAR'
 export const UPDATE_NEW_PROVIDER = 'UPDATE_NEW_PROVIDER_HAWKULAR';
+
 function initNewProvider(state, action): AppState {
   const newProvider = {
     providers: {

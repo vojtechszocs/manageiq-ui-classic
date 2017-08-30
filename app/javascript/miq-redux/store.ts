@@ -1,19 +1,18 @@
-import { createStore, applyMiddleware, compose, Store } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { rootReducer } from './reducer';
+import { AppState, MiqStore } from './redux-types';
 
-import { AppState } from './redux-types';
-
-const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose;
-
-export function configureStore(initialState?: AppState): Store<AppState> {
+export function configureStore(initialState?: AppState): MiqStore {
   const middlewares = [];
+
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const enhancer = composeEnhancers(
-    applyMiddleware(...middlewares),
+    applyMiddleware(...middlewares)
   );
 
   return createStore<AppState>(
     rootReducer,
     initialState!,
-    enhancer,
+    enhancer
   );
 }

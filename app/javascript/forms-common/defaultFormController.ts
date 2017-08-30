@@ -1,5 +1,5 @@
-import { getStore, addReducer, applyReducerHash } from '../miq-redux/lib';
-import { MiqStore, IMiqReducerHash, AppState, Action } from '../miq-redux/redux-types';
+import { getStore, addReducer, applyReducerHash } from '../miq-redux/redux-client';
+import { MiqStore, IMiqReducerHash, AppState, IMiqAction } from '../miq-redux/redux-types';
 
 export interface IUnbindReduxReducers {
   redux?: () => void;
@@ -13,7 +13,7 @@ export abstract class DefaultFormController {
   constructor(reducersHash?: IMiqReducerHash) {
     if (reducersHash) {
       this.unbind.reducer = addReducer(
-        (state: AppState, action: Action) => applyReducerHash(reducersHash, state, action)
+        (state: AppState, action: IMiqAction) => applyReducerHash(reducersHash, state, action)
       );
     }
     this.reduxStore = getStore();

@@ -1,25 +1,31 @@
-import { createStore, Store, Reducer, Action } from 'redux';
-
 import { IMiqAction, AppReducer, IMiqReducerHash, AppState } from './redux-types';
 
 const reducers: Set<AppReducer> = new Set();
 
-export const rootReducer: AppReducer = (state = {}, action: IMiqAction) => {
+export const rootReducer: AppReducer = (state: AppState = {}, action: IMiqAction) => {
   let newState = state;
 
-  reducers.forEach((reducer) => {
-    newState = reducer(newState, action)
+  reducers.forEach(reducer => {
+    newState = reducer(newState, action);
   });
+
   return newState;
 };
 
-export function addReducer(reducer: AppReducer) {
+export function addReducer(reducer: AppReducer): () => void {
   reducers.add(reducer);
+
   return () => {
     reducers.delete(reducer);
   }
 }
 
 export function applyReducerHash(reducers: IMiqReducerHash, state: AppState, action: IMiqAction): AppState {
-  return (reducers.hasOwnProperty(action.type) && reducers[action.type](state, action)) || state;
+  let newState = state;
+
+  if (reducers.hasOwnProperty(action.type)) {
+    newState = reducers[action.type](state, action);
+  }
+
+  return newState;
 }
